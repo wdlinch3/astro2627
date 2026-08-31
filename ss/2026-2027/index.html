@@ -1,59 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>    
-
-
-
-
-
-
-
-
-
-<style>
-  :root {
-    --page-bg-image: url('/assets/images/backgrounds/blackboard.png');
-    --page-bg-position: center center;
-    --page-bg-size: cover;
-    --page-bg-overlay: rgba(13, 17, 23, 0.25);
-    --page-bg-opacity: 0.65;
-  }
-</style>
-    
-    
+<head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#06101d">
   <title>AA:SS 2026–2027 | William D. Linch III</title>
-
-  <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="stylesheet" href="/assets/css/aa.css?v=2">
-  
-  <link rel="stylesheet" href="/assets/css/aa_ss_theme.css">
-  
-
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['\\(', '\\)'], ['$', '$']],
-        displayMath: [['\\[', '\\]'], ['$$', '$$']]
-      }
-    };
-  </script>
-  <script
-    id="MathJax-script"
-    async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
-  </script>
+  <link rel="stylesheet" href="/assets/css/aa_ss_class.css">
 </head>
-<body class="has-page-bg">
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
 
-<div class="page-bg" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="site-mark" aria-label="Advanced Astronomy">
+        <a class="site-mark-kicker" href="/">Advanced Astronomy</a>
+        <span class="site-mark-separator" aria-hidden="true">/</span>
+        <a class="site-name" href="/ss/">Solar System</a>
+      </div>
 
-    <main class="aa-page aa-page-compact">
+      <nav aria-label="Course navigation">
+        <ul>
+          <li><a href="/ss/2026-2027/" aria-current="page">Class</a></li>
+          <li><a href="/ss/">AA:SS</a></li>
+          <li><a href="/packets/">Packets</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <nav class="family-strip" aria-label="Astro at TJ">
+    <div class="family-inner">
+      <span class="family-label">Astro at TJ</span>
+      <ul>
+        <li><a class="family-current" href="/ss/2026-2027/" aria-current="page">Classes</a></li>
+        <li><a href="https://activities.tjhsst.edu/astro/">Research Lab</a></li>
+        <li><a href="https://activities.tjhsst.edu/astronomyclub/">Astro Club</a></li>
+        <li><a href="https://activities.tjhsst.edu/astroteam/">Astro Team</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main" class="class-shell">
     
-
-    <section class="aa-content">
-      
 
 <p class="aa-eyebrow">Advanced Astronomy · 2026–2027</p>
 <h1>AA: Solar System</h1>
@@ -193,7 +182,10 @@
   
 </div>
 
-    </section>
   </main>
+
+  <footer class="site-footer">
+    <p><a href="/">Advanced Astronomy</a> at Thomas Jefferson High School for Science and Technology</p>
+  </footer>
 </body>
 </html>
