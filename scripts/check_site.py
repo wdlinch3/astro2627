@@ -51,16 +51,18 @@ class Targets(HTMLParser):
                 self.targets.append(value)
 
 
-def resolves(url: str) -> bool:
+def resolves(url: str, source: Path) -> bool:
     parsed = urlsplit(url)
     if parsed.scheme or parsed.netloc or url.startswith(("mailto:", "tel:", "//", "#")):
         return True
     raw_path = unquote(parsed.path)
     if not raw_path:
         return True
-    candidate = ROOT / raw_path.lstrip("/") if raw_path.startswith("/") else None
-    if candidate is None:
-        return True
+    candidate = (
+        ROOT / raw_path.lstrip("/")
+        if raw_path.startswith("/")
+        else source.parent / raw_path
+    )
     if candidate.is_dir():
         candidate = candidate / "index.html"
     elif not candidate.suffix:
@@ -96,13 +98,13 @@ def main() -> None:
         parser = Targets()
         parser.feed(text)
         for target in parser.targets:
-            if not resolves(target):
+            if not resolves(target, path):
                 errors.append(f"missing local target in {path.relative_to(ROOT)}: {target}")
 
     for path in ROOT.rglob("*.css"):
         text = path.read_text(encoding="utf-8")
         for target in CSS_URL.findall(text):
-            if not resolves(target):
+            if not resolves(target, path):
                 errors.append(f"missing CSS asset in {path.relative_to(ROOT)}: {target}")
 
     if errors:
@@ -113,4 +115,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
