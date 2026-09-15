@@ -19,6 +19,7 @@ GENERATED_TOP_LEVEL = (
     "ss_emphasis.pdf",
     "u_emphasis.pdf",
     "packets",
+    "assignments",
     "ss",
     "u",
     "vlo",
