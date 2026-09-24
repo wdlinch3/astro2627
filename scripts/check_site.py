@@ -16,6 +16,8 @@ REQUIRED = (
     "ss/2026-2027/celestial-navigation/part-1/index.html",
     "ss/2026-2027/celestial-navigation/part-2/index.html",
     "ss/aristarchus/index.html",
+    "ss/kepler1/index.html",
+    "assignments/ss_kepler1.zip",
     "x/geometry/index.html",
     "tj/adv_astro/jupyter_instructions/index.html",
     "tj/adv_astro/latex_instructions/index.html",
@@ -44,6 +46,9 @@ EXPECTED_CLASS_TEXT = (
     "Part I reading",
     "Part II reading",
     "Aristarchus",
+    "Kepler’s Laws (Part I)",
+    "Course textbook: Astronomy 2e",
+    "Download textbook (PDF)",
 )
 CSS_URL = re.compile(r"url\(\s*['\"]?(/[^)'\"]+)")
 
