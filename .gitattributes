@@ -1,0 +1,2 @@
+# Preserve Quarto embedded vendor scripts byte-for-byte.
+ss/kepler1/index.html whitespace=-blank-at-eol
