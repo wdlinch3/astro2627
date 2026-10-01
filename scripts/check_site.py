@@ -19,6 +19,8 @@ REQUIRED = (
     "ss/kepler1/index.html",
     "assignments/ss_kepler1.zip",
     "x/geometry/index.html",
+    "x/astrodynamics_1/index.html",
+    "assignments/x_astrodynamics_1.zip",
     "tj/adv_astro/jupyter_instructions/index.html",
     "tj/adv_astro/latex_instructions/index.html",
     "tj/adv_astro/latex_instructions/images/jim-hefferon-latex-math-for-undergrads.pdf",
@@ -47,8 +49,9 @@ EXPECTED_CLASS_TEXT = (
     "Part II reading",
     "Aristarchus",
     "Kepler’s Laws (Part I)",
+    "Astrodynamics (Part I)",
     "Course textbook: Astronomy 2e",
-    "Download textbook (PDF)",
+    "PDF; download",
 )
 CSS_URL = re.compile(r"url\(\s*['\"]?(/[^)'\"]+)")
 
