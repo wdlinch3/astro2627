@@ -1,4 +1,7 @@
 {
+  "local_preview": false,
+  "minicourse_catalog_url": "https://activities.tjhsst.edu/astro/minicourses/",
+  "minicourses": "scripts/minicourses.json",
   "source_commit": "949ddc996bdad583f404fc10f6f6d33fb10710e3",
   "source_repository": "https://github.com/wdlinch3/wdlinch3.github.io"
 }
