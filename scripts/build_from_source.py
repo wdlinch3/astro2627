@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import html
 import re
 import shutil
 import subprocess
@@ -14,6 +15,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 GENERATED_TOP_LEVEL = (
+    "teaching",
     "index.html",
     "aa@tj.pdf",
     "ss_emphasis.pdf",
@@ -78,6 +80,65 @@ def rewrite_urls(root: Path) -> None:
             path.write_text(text, encoding="utf-8")
 
 
+def style_minicourse(text: str, pdf: str, catalog_url: str) -> str:
+    """Use the existing source-owned AA packet theme without changing lesson content."""
+    text = text.replace('</head>', '<link rel="stylesheet" href="/assets/css/aa_packet_theme.css">\n</head>', 1)
+    navigation = ('<nav class="packet-nav" aria-label="Packet navigation">'
+                  '<a href="/">Advanced Astronomy</a>'
+                  f'<a href="{html.escape(catalog_url, quote=True)}">Minicourses</a>'
+                  f'<a href="/{html.escape(pdf, quote=True)}">PDF</a>'
+                  '<span>Minicourse</span></nav>')
+    text, count = re.subn(r'<nav class="minicourse-site-nav"[^>]*>.*?</nav>', navigation, text, flags=re.S)
+    if count == 0:
+        text, main_count = re.subn(r'(<main\b[^>]*>)', lambda match: match.group(1) + navigation, text, count=1)
+        if main_count != 1:
+            raise SystemExit("Expected a reading main element")
+        text = text.replace('</main>', navigation + '</main>', 1)
+    elif count != 2:
+        raise SystemExit("Expected top and bottom minicourse navigation")
+    return text
+
+
+def add_minicourses(built: Path, stage: Path, catalog_url: str) -> None:
+    """Mirror only allowlisted current public readings, PDFs and runtime assets."""
+    manifest = json.loads((REPO_ROOT / "scripts/minicourses.json").read_text())
+    for relative in manifest["files"]:
+        source = built / relative
+        if not source.is_file():
+            raise SystemExit(f"Missing minicourse artifact: {relative}")
+        destination = stage / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+    pdfs = {}
+    source_catalog = (built / "teaching/minicourses/index.html").read_text()
+    sections = re.findall(r'<section class="section-card" id="[^"]+">(.*?)</section>', source_catalog, re.S)
+    if len(sections) != 8:
+        raise SystemExit("Minicourse catalog changed; review the deployment allowlist")
+    for section in sections:
+        links = re.findall(r'href="([^"]+)"', section)
+        reading = next(link for link in links if link.endswith('.html')).lstrip('/')
+        pdf = next(link for link in links if link.endswith('.pdf')).lstrip('/')
+        if not {reading, pdf}.issubset(manifest["files"]):
+            raise SystemExit("Catalog reading/PDF missing from deployment allowlist")
+        pdfs[reading] = pdf
+    catalog = stage / "teaching/minicourses/index.html"
+    destination = html.escape(catalog_url, quote=True)
+    catalog.write_text(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url={destination}"><title>Minicourses</title></head><body><p><a href="{destination}">Open the Minicourses catalog</a></p></body></html>\n', encoding="utf-8")
+    for page in (stage / "teaching/minicourses").rglob("*.html"):
+        text = page.read_text()
+        # Generated navigation adaptation only; student prose and mathematics stay intact.
+        text = text.replace('href="/teaching/"', 'href="/"')
+        text = text.replace('href="https://wdlinch3.github.io/teaching/minicourses/', 'href="/teaching/minicourses/')
+        relative = page.relative_to(stage).as_posix()
+        if relative in pdfs:
+            text = style_minicourse(text, pdfs[relative], catalog_url)
+        page.write_text(text)
+    # Quarto/vendor output includes trailing whitespace; normalize generated text.
+    for asset in (stage / "teaching/minicourses").rglob("*"):
+        if asset.is_file() and asset.suffix in TEXT_SUFFIXES:
+            asset.write_text('\n'.join(line.rstrip() for line in asset.read_text().splitlines()).rstrip() + '\n')
+
+
 def replace_generated_tree(stage: Path) -> None:
     for name in GENERATED_TOP_LEVEL:
         destination = REPO_ROOT / name
@@ -99,6 +160,7 @@ def main() -> None:
     parser.add_argument("--source", required=True, type=Path)
     parser.add_argument("--ref", default="main")
     parser.add_argument("--bundle")
+    parser.add_argument("--catalog-url", default="https://activities.tjhsst.edu/astro/minicourses/", help="Catalog destination; use localhost only for a local preview")
     args = parser.parse_args()
 
     source = args.source.resolve()
@@ -150,9 +212,13 @@ def main() -> None:
             shutil.copytree(built / shared, stage / shared)
 
         rewrite_urls(stage)
+        add_minicourses(built, stage, args.catalog_url)
         (stage / "SOURCE_COMMIT").write_text(f"{commit}\n", encoding="utf-8")
         metadata = {
             "source_commit": commit,
+            "minicourses": "scripts/minicourses.json",
+            "minicourse_catalog_url": args.catalog_url,
+            "local_preview": args.catalog_url.startswith("http://127.0.0.1:"),
             "source_repository": "https://github.com/wdlinch3/wdlinch3.github.io",
         }
         (stage / "DEPLOYMENT.json").write_text(
