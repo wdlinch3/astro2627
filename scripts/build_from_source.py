@@ -25,6 +25,7 @@ GENERATED_TOP_LEVEL = (
     "ss",
     "u",
     "vlo",
+    "objectives",
     "x",
     "assets",
     "tj",
