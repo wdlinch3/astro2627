@@ -204,7 +204,7 @@ def main() -> None:
             raise SystemExit("could not archive the selected source commit")
 
         run(
-            [bundle, "exec", "jekyll", "build", "--destination", str(built)],
+            [bundle, "exec", "jekyll", "build", "--config", "_config.yml,_config.school.yml", "--destination", str(built)],
             cwd=archived_source,
         )
 
