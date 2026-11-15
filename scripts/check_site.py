@@ -12,6 +12,9 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = (
     "index.html",
+    "objectives/index.html",
+    "objectives/ss/index.html",
+    "objectives/x/index.html",
     "ss/2026-2027/index.html",
     "ss/2026-2027/celestial-navigation/part-1/index.html",
     "ss/2026-2027/celestial-navigation/part-2/index.html",
@@ -36,6 +39,8 @@ REQUIRED = (
     "DEPLOYMENT.json",
 )
 EXPECTED_CLASS_TEXT = (
+    "Complete course objectives",
+    "Learning objectives",
     "ION",
     "Astronomy Club",
     "Astronomy Team",
